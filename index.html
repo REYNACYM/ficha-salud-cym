@@ -627,22 +627,37 @@ document.getElementById('btn-enviar').addEventListener('click', function(){
   spin.style.display = 'block';
 
   // ── REEMPLAZA ESTA URL CON LA DE POWER AUTOMATE ───────────────────────────
-  var POWER_AUTOMATE_URL = 'https://defaultf9910f4e4dd74a8ca62ff60b32d0b4.17.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/57fa1b56b101479b8b91661fe080aabe/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=jXPxNBZbP7olE9PfWLYKG4_4WCjZgCrRxFLFH4orYWk';
+  var POWER_AUTOMATE_URL = 'https://defaultf9910f4e4dd74a8ca62ff60b32d0b4.17.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c37bc7dc061e4cd4a4eead8e7f76469a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=qpSGVZMNIDhMBDIDsLWEoK9pNblT9yLD4Y_SaMpHAfE';
   // ─────────────────────────────────────────────────────────────────────────
 
-var enviar = function(){
-  fetch(POWER_AUTOMATE_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify(datos)
-  }).catch(function(){ /* CORS esperado */ });
-
-  setTimeout(function(){
-    document.getElementById('form-content').style.display = 'none';
-    document.querySelector('.badge-wrap').style.display = 'none';
-    document.getElementById('success-screen').classList.add('visible');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, 1800);
+  var enviar = function(){
+    if(POWER_AUTOMATE_URL === 'https://defaultf9910f4e4dd74a8ca62ff60b32d0b4.17.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c37bc7dc061e4cd4a4eead8e7f76469a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=qpSGVZMNIDhMBDIDsLWEoK9pNblT9yLD4Y_SaMpHAfE'){
+      // MODO DEMO
+      setTimeout(function(){
+        document.getElementById('form-content').style.display = 'none';
+        document.querySelector('.badge-wrap').style.display   = 'none';
+        document.getElementById('success-screen').classList.add('visible');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 1500);
+      return;
+    }
+    fetch(POWER_AUTOMATE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(datos),
+      mode: 'no-cors'
+    }).then(function(){
+      document.getElementById('form-content').style.display = 'none';
+      document.querySelector('.badge-wrap').style.display   = 'none';
+      document.getElementById('success-screen').classList.add('visible');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }).catch(function(){
+      btn.disabled = false;
+      txt.textContent = '💾 Enviar mi ficha médica';
+      spin.style.display = 'none';
+      errEl.textContent = 'Error al enviar. Por favor intenta de nuevo o avisa a Talento Humano.';
+      errEl.style.display = 'block';
+    });
   };
   enviar();
 });
